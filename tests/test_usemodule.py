@@ -3,24 +3,17 @@
 import unittest
 from unittest.mock import patch
 
-from tmc import points
-
-from tmc.utils import load, get_stdout
-
-module_name="src.usemodule"
-main = load(module_name, "main")
 from src import triangle
 from src import usemodule
 
 
-@points('p01-20.1')
-class Usemodule(unittest.TestCase):
+class TestUsemodule(unittest.TestCase):
 
     def check_attr(self, attr):
         self.assertTrue(hasattr(triangle, attr),
                         "The module triangle is missing the attribute %s!" % attr)
-        
-    
+
+
     def test_module(self):
         self.check_attr("__author__")
         self.assertGreaterEqual(len(triangle.__author__), 5,
@@ -32,7 +25,7 @@ class Usemodule(unittest.TestCase):
         self.assertIsNotNone(triangle.__doc__, msg = "The module triangle has no docstring!")
         self.assertGreater(len(triangle.__doc__), 10,
                            "The docstring for module triangle is too short!")
-        
+
         self.assertTrue(hasattr(triangle.hypothenuse, "__doc__"),
                          msg="The function triangle.hypothenuse has no docstring!")
         self.assertIsNotNone(triangle.hypothenuse.__doc__,
@@ -56,7 +49,7 @@ class Usemodule(unittest.TestCase):
         res = triangle.area(1, 1)
         self.assertIsInstance(res, float, f"area should return a floating point number when called with 1, 1. Got {type(res)}.")
         self.assertAlmostEqual(res, 0.5, 3, f"area of triangle with sides 1, 1 should be 0.5. Got {res}.")
-        
+
     def test_main(self):
         with patch('src.triangle.hypothenuse') as h:
             with patch('src.triangle.area') as a:
@@ -65,7 +58,6 @@ class Usemodule(unittest.TestCase):
                                         msg="Expected 'triangle.hypothenuse' to have been called!")
                 self.assertGreaterEqual(a.call_count, 1,
                                         msg="Expected 'triangle.area' to have been called!")
-        
+
 if __name__ == '__main__':
     unittest.main()
-    
